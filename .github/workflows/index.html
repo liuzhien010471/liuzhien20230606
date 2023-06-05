@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>劉至恩的作品集</title>
+
+    <style>
+        #banner {
+            position: fixed;
+            top: 10px;
+            right:10px;
+            height: 40px;
+        }
+        h1{
+            text-align: center;
+        }
+        img{
+            object-fit: cover;
+            vertical-align: middle;
+            transform: 0.5s;
+            transition: 0.5s;
+            
+        }
+        .d-block:hover{
+            transition: 0.5s;
+            -webkit-filter: saturate(150%); /* Safari */
+            filter: saturate(150%);
+        }
+        #title{
+            border-bottom: 1px black solid;
+            margin-top: 8px;
+        }
+        #tabs{
+            width: 85%;
+            max-width: 1000px;
+            min-width: 500px;
+            margin: auto;
+            padding: 0%;
+            border: 0;
+        }
+
+        #carouselExample{
+            margin: auto;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            width:1000px;
+            transition: 2S;
+        }
+        .tab-font{
+            padding: 5px;
+            display:inline-block;
+            vertical-align: top;
+            width: 55%;
+            text-align:start;
+            margin: 5px;
+        }
+        .tab-font>p{
+            display:inline-block;
+        }
+        .tab-img{
+            /* background-color: blue; */
+            display:inline-block;
+            width: 35%;
+            text-align: center;
+        }
+        .card_img{
+            width: 95%;
+            height: 100%;
+            vertical-align: middle;
+            min-height: 150px;
+            max-height: 400px;
+            object-fit: cover;
+            
+            
+        }
+        .card_left{
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .card_right{
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        main{
+            min-width: 75%;
+            max-width: 100%;
+        }
+        #carouselExample{
+            z-index: 99;
+            width: 85%;
+            max-width: 1000px;
+            min-width: 500px;
+        }
+        #private_header{
+            background-color: white;
+            border: rgb(238, 223, 8) 2px solid;
+            display: flex;
+            margin-top: 10px;
+            margin-bottom: 30px;
+            justify-content: space-around;
+            font-size: 18px;
+        }
+        #private_header_li{
+            border: 0;
+            /* background-color: white; */
+            /* color: black; */
+        }
+        
+        #private_header_li>a{
+            background-color: white;
+            color: black;
+        }
+        .card_img:hover{
+            transform: scale(1.2);
+            transition: 0.5s;
+        }
+
+        #plan_win {
+            position: fixed;
+            top: 150px;
+            left: 150px;
+            right: 150px;
+            border: 1px solid white;
+            padding: 10px;
+            background-color: blanchedalmond;
+            display: none;
+            border-radius: 8px;
+            box-shadow: 10px 10px 20px rgb(0, 0, 0, 0.5);
+            padding-top: 30px;
+            z-index: 100;
+        }
+        #close {
+            position: absolute;
+            top: 0px;
+            right: 2px;
+            /* width: 360px; */
+            padding: 2px;
+            border: 1px solid gray;
+            margin: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 999;
+        }
+        .plan_item {
+            display: flex;
+            width: 300px;
+            overflow: auto;
+            margin: 3px;
+            z-index: 1000;
+        }
+
+        .plan_img {
+            width: 60px;
+            float: left;
+            margin-right: 10px;
+        }
+
+        .plan_text {
+            float: left;
+            width: 280px;
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+        .plan_delete{
+            display: flex;
+            z-index: 999;
+        }
+
+    </style>
+
+
+    <!--jQueryUI-->
+    <link rel="stylesheet" href="./_js/jquery-ui.css">
+    <!-- Bootstrap-->
+    <link rel="stylesheet" href="./_js/Bootstrap/css/bootstrap.min.css"> 
+
+    <script src="./_js/jquery.min.js"></script>
+    <script src="./_js/jquery-ui.js"></script>
+    <script src="./_js/Bootstrap/js/bootstrap.js"></script>
+    
+    <script>
+        /*
+        *陣列儲存會抵達的機場
+        *當加入的景點需要搭乘該機場時，該機場的值為true，反之則為false
+        *陣列元素為[阿必尚，雅穆索戈]
+        */
+        var $ToGoAirport=[false,false];
+        /*
+        *陣列儲存會抵達的機場
+        *當使用者加入的景點，該景點的值為true，反之則為false
+        *陣列元素為
+        *[大巴薩姆,阿必尚聖保羅大教堂,象牙海岸文明博物館]
+        *[雅穆索戈和平之后大殿]
+        */
+        var $ToGoLocation=[
+            [false,false,false],
+            [false]
+        ];
+
+        var $Airport=['阿必尚','雅穆索戈'];
+        var $Location=[
+        ["大巴薩姆","阿必尚聖保羅大教堂","象牙海岸文明博物館"]
+        ["雅穆索戈和平之后大殿"]
+        ];
+
+
+        
+        $(document).ready(function(){
+            $( "#tabs" ).tabs();
+
+            $("#go_plan").click(function(){
+                $("#plan_win").fadeIn(300);
+                $("#banner").fadeOut(300);
+            });
+            
+            $("#plan_win>#close").click(function(){
+                $("#plan_win").fadeOut(300);
+                $("#banner").fadeIn(300);
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+    <div id="title">
+        
+        <h1>劉至恩的作品集</h1>
+        
+    </div>
+
+
+    <main>
+        <!--slide-->
+        <div id="carouselExample" class="carousel slide">
+            <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="./img/012.jpg" class="d-block w-100" alt="..." height="350px">
+            </div>
+            <div class="carousel-item">
+                <img src="./img/2023-03-27_210054.jpg" class="d-block w-100" alt="..." height="350px">
+            </div>
+            <div class="carousel-item">
+                <img src="./img/keroro2_1_185.jpg" class="d-block w-100" alt="..." height="350px">
+            </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        <div id="tabs">
+            <ul id="private_header">
+                <li id="private_header_li"><a href="#tab-1">遊戲企劃</a></li>
+                <li id="private_header_li"><a href="#tab-2">設計與藝術</a></li>
+                <li id="private_header_li"><a href="#tab-3">3D建模</a></li>
+                <li id="private_header_li"><a href="#tab-4">影視</a></li>
+                <li id="private_header_li"><a href="#tab-5">履歷</a></li>
+            </ul>
+            <!-- 遊戲企劃 -->
+            <div id="tab-1">
+                <div class="card_div" data-airport="0" data-order="2">
+                     <!-- 左圖右文卡 -->
+                    <div class="card_left">
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/2023-03-27_210101.jpg" alt="">
+                            <img class="card_img" src="./img/2023-03-27_210054.jpg" alt="">
+                        </div>
+                        <div class="tab-font" style="border-left: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">冰封世界</h2>
+                            <p>
+                                2D沙盒遊戲。參考了冰封龐克與邊緣世界所製作的沙盒生存遊戲，負責組內Unity主程式、企劃以及時程管理。
+                                遊戲中創建了地圖生成演算法，每次遊玩都會產生不同的遊戲地圖。
+                                玩家可以在地圖上進行移動、破壞以及放置方塊，同時可以取得升級點並提升技能。
+                            </p>
+                        </div>  
+                    </div>
+                </div>
+                <div class="card_div" data-airport="0" data-order="3">
+                    <!-- 右圖左文卡 -->
+                    <div class="card_right">
+                        <div class="tab-font" style="border-right: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">戰車大賽</h2>
+                            <p>
+                                2D射擊遊戲，利用Scratch製作的戰車遊戲，雖然是在尚未學會程式語言時製作的，但遊戲功能完整，為獨立開發。
+                                包含說明、兩種遊戲模式以及多張地圖可以選擇。經典戰鬥中玩家頭上會出現血量以及裝填量表，地圖中還會定時出現一些不同功能的補給品，幫助戰鬥。
+                            </p>
+                        </div>  
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/戰車/2023-03-27_231729.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="card_div" data-airport="0" data-order="1">
+                    <!-- 左圖右文卡 -->
+                    <div class="card_left">
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/2023-03-27_210135.jpg" alt="">
+                        </div>
+                        <div class="tab-font" style="border-left: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">戰車高手</h2>
+                            <p>
+                                3D射擊遊戲。使用Unity開發的多人戰車遊戲，導入了網路連線功能，為獨立開發。戰車也是自行建模而成。
+                            </p>
+                        </div>  
+                    </div>
+                </div>
+                <div class="card_div" data-airport="1" data-order="1">
+                    <div class="card_right">
+                         <!-- 右圖左文卡 -->
+                        <div class="tab-font" style="border-right: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">西洋棋三缺一</h2>
+                            <p>
+                                為桌遊與手機遊戲企劃，桌遊製作了實體版，手遊則處在企畫階段。負責組內企劃發想、時程管理以及製作。
+                                桌遊包含一個說明書，四個陣營的旗子，以及四塊拼圖形的棋盤，可以組成一個大棋盤。組合後棋盤大約為圍棋棋盤大小。
+                                手遊企劃則包含多種功能，包括聊天、排位、房間配對、視訊功能。
+                            </p>
+                        </div>  
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/03.jpg" alt="">
+                            <img class="card_img" src="./img/電玩企劃-遊戲畫面1.2_工作區域 1.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 設計與藝術 -->
+            <div id="tab-2">
+                <div class="card_div">
+                    <!-- 左圖右文卡 -->
+                    <div class="card_left">
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/品牌重塑/4.20.png" alt="">
+                            <img class="card_img" src="./img/品牌重塑/03.png" alt="">
+                        </div>
+                        <div class="tab-font" style="border-left: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">食在粥到-品牌重塑</h2>
+                            <p>
+                                原始招牌辨識度差，輪廓擠壓顏色混雜，識別性甚至不如傳統的大紅大白字招牌
+                                實際調查可知食物好吃，以口耳相傳的方式獲得居民喜愛，如果改善設計便有很大的潛力。
+                                除了LOGO外重新設計菜單，使用暖色調增加食慾，放置一些具質感的照片，讓消費者覺得食物衛生，提升產品期待。
+                            </p>
+                        </div>  
+                    </div>
+                </div>
+                <div class="card_div">
+                    <!-- 右圖左文卡 -->
+                    <div class="card_right">
+                        <div class="tab-font" style="border-right: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">食蟻獸-石頭色彩藝術</h2>
+                            <p>
+                                利用石頭堆砌成食蟻獸，同時依照顏色去排列出漸層。
+                            </p>
+                        </div>  
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/S__123117594.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="card_div">
+                    <!-- 左圖右文卡 -->
+                    <div class="card_left">
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/設計史/04.jpg" alt="">
+                        </div>
+                        <div class="tab-font" style="border-left: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">表現主義創作-2022大事記</h2>
+                            <p>
+                                表現主義是一種重表達情感的藝術風格，
+                                採用了此種風格表達整個2022年充滿戲劇性的事件，繪製成封面。
+                                並在內頁撰寫了關於整年大事件的節錄以及代表顏色。
+                                內頁中，放置一張圖片，右邊撰寫簡要的概述。
+                                左上則是標題與小標。右邊則放置代表色彩。
+                                我特地挑選了2022年的各種大事，自行撰寫內文並選擇相應的顏色。
+                            </p>
+                        </div>  
+                    </div>
+                </div>
+
+                <div class="card_div">
+                    <div class="card_right">
+                        <!-- 右圖左文卡 -->
+                        <div class="tab-font" style="border-right: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">桃花工作營社區營造-局外人</h2>
+                            <p>
+                                在桃園的內壢里探索可以改善的地方，並將其重製，營造成一個新的場域。
+                                我們找尋到了一處廢墟，位於里民活動中心旁，將其清理後建設成一處室內空間。
+                                在內壢里收集了許多老舊的材料，讓新舊交融。各種老舊物品重新改造，並放置於場域中。
+                                一個小空間，陽光會從上方的橘色遮棚照入。
+                                讓整個場域如同老舊電視一般回到過去。
+    
+                            </p>
+                        </div>  
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/桃花工作營成品/18.jpg" alt="">
+                            <img class="card_img" src="./img/桃花工作營成品/19.jpg" alt="">
+                        </div>
+                    </div>
+                </div>  
+                <div class="card_div">
+                    <!-- 左圖右文卡 -->
+                    <div class="card_left">
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/金犢03-21.jpg" alt="">
+                        </div>
+                        <div class="tab-font" style="border-left: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">金犢獎-WiZ行銷設計</h2>
+                            <p>
+                                WiZ是一間燈具企業，這次希望能夠行銷其旗下的各類智慧型燈具。
+                                這次透過黑色底色，以燈條的型式做成兩張海報，搭配情境文案，襯托Wiz燈具的多種功能。
+                                獲得入圍。
+                            </p>
+                        </div>  
+                    </div>
+                </div>                
+            </div>
+            <!-- 3D建模 -->
+            <div id="tab-3">
+                <div class="card_div">
+                    <!-- 左圖右文卡 -->
+                    <div class="card_left">
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/008.jpg" alt="">
+                            <img class="card_img" src="./img/024.jpg" alt="">
+                        </div>
+                        <div class="tab-font" style="border-left: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">蛇亭 - SketchUp建模</h2>
+                            <p>
+                                利用SketchUp建模，位於英國海德公園的蛇亭。
+                            </p>
+                        </div>  
+                    </div>
+                </div>
+                <div class="card_div">
+                    <!-- 右圖左文卡 -->
+                    <div class="card_right">
+                        <div class="tab-font" style="border-right: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">戰車戰鬥機 - Rhino建模</h2>
+                            <p>
+                                利用Rhino建模，融合日本戰鬥機以及蘇聯戰車所建設的戰車戰鬥機。
+                                為巨型戰鬥機裝上戰車砲塔所形成。
+                            </p>
+                        </div>  
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/2021-06-05_194552.jpg" alt="">
+                            <img class="card_img" src="./img/2021-06-05_194851.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="card_div">
+                    <!-- 左圖右文卡 -->
+                    <div class="card_left">
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/S1093203.jpg" alt="">
+                            <img class="card_img" src="./img/S1093203-2.jpg" alt="">
+                        </div>
+                        <div class="tab-font" style="border-left: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">百夫長與車長 - MAYA建模</h2>
+                            <p>
+                                利用MAYA製作，英國的百夫長戰車以及承在上面的車長。
+                            </p>
+                        </div>  
+                    </div>
+                </div>   
+            </div>
+            <!-- 影視 -->
+            <div id="tab-4">
+
+                <div class="card_div">
+                    <!-- 左圖右文卡 -->
+                    <div class="card_left">
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/2023-03-27_205924.jpg" alt="">
+                        </div>
+                        <div class="tab-font" style="border-left: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">龍岡紀錄片-王記山東水餃</h2>
+                            <p>
+                                在龍岡有一間頗負盛名的水餃店，那是中國來的新移民所創設的。
+                                我們便採訪他拍攝了一段短短的紀錄片。負責導演、劇本以及攝影
+    
+                            </p>
+                        </div>  
+                
+                </div>
+                </div>  
+                <div class="card_div">
+                    <!-- 右圖左文卡 -->
+                    <div class="card_right">
+                        <div class="tab-font" style="border-right: 1px black solid; padding: 10px;">
+                            <h2 class="card_header">動畫片尾3D化-Keroro軍曹</h2>
+                            <p>
+                                將Keroro片尾動畫利用MAYA重製，負責組內統籌與品質管理。
+                                使用Arnold渲染器。負責整個專案的流程控制。同時要驗收組員提交的模型與動畫並給予指導以及修正。
+                                
+                            </p>
+                        </div>  
+                        <div class="tab-img">
+                            <img class="card_img" src="./img/keroro2_1_185.jpg" alt="">
+                        </div>
+                    </div>
+                </div>    
+            </div>
+            <div id="tab-5">
+                <div class="card_right">
+                    <img src="./img/logo-1093203劉至恩.png" alt="" style="width: 40%;margin-bottom: 40px;">
+                    <h2>劉至恩</h2>
+                    <p>
+                        自幼便喜愛學習各項知識，也發展出了畫圖的興趣。
+                        對於創作有高度熱愛，國中就曾嘗試製作當個創世神模組與利用RPGmaker進行遊戲開發。
+                        同時對於技能與知識持續保持廣泛接觸，不侷限於特定領域，具備優異的跨領域能力。
+                    </p>
+                    <img src="./img/1093203履歷.jpg" alt="" style="width: 90%; margin: 20px;">
+                </div>
+                
+
+            </div>
+        </div>
+      
+    </main>
+    
+    <div id="plan_win">
+        <button id="close">X</button>
+    </div>
+    
+</body>
+</html>
